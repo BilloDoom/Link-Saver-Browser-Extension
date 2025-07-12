@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Link Saver</title>
+  <style>
+    body { font-family: sans-serif; padding: 10px; width: 320px; }
+    h3 { margin-top: 0; }
+    select, input, button { width: 100%; margin-top: 8px; }
+    .category { font-weight: bold; margin-top: 12px; }
+    ul { list-style: none; padding-left: 10px; }
+    li { margin-bottom: 5px; word-break: break-word; }
+    button.small { font-size: 12px; margin-right: 5px; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h3>Save Current Page</h3>
+  <select id="category-select">
+    <option value="Uncategorized">Uncategorized</option>
+  </select>
+  <input type="text" id="new-category" placeholder="New category name (optional)">
+  <button id="save-btn">Save Page URL</button>
+
+  <hr>
+
+  <h3>Saved Links</h3>
+  <div id="link-groups"></div>
+
+  <button class="small" id="copy-all">Copy All</button>
+  <button class="small" id="clear-all">Clear All</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
