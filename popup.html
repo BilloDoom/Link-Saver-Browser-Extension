@@ -1,33 +1,70 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Link Saver</title>
-  <style>
-    body { font-family: sans-serif; padding: 10px; width: 320px; }
-    h3 { margin-top: 0; }
-    select, input, button { width: 100%; margin-top: 8px; }
-    .category { font-weight: bold; margin-top: 12px; }
-    ul { list-style: none; padding-left: 10px; }
-    li { margin-bottom: 5px; word-break: break-word; }
-    button.small { font-size: 12px; margin-right: 5px; margin-top: 5px; }
-  </style>
+    <title>Link Saver</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            min-width: 320px;
+            max-width: 400px;
+        }
+    </style>
 </head>
+
 <body>
-  <h3>Save Current Page</h3>
-  <select id="category-select">
-    <option value="Uncategorized">Uncategorized</option>
-  </select>
-  <input type="text" id="new-category" placeholder="New category name (optional)">
-  <button id="save-btn">Save Page URL</button>
+    <h3>Page Saver</h3>
 
-  <hr>
+    <input type="text" id="category-path" placeholder="e.g., Work/Research" value="/">
 
-  <h3>Saved Links</h3>
-  <div id="link-groups"></div>
+    <hr>
 
-  <button class="small" id="copy-all">Copy All</button>
-  <button class="small" id="clear-all">Clear All</button>
+    <div id="path-box">
+        <div id="path-preview" class="path-valid" style="flex: 1; padding: 8px;"></div>
+    </div>
 
-  <script src="popup.js"></script>
+    <hr>
+
+    <button id="save-btn" class="small">
+        <p class="button-p">
+            Save Page URL
+        </p>
+        <i data-lucide="save"></i>
+    </button>
+
+    <hr>
+
+    <h3>Saved Links</h3>
+    <div id="link-groups"></div>
+
+    <div style="display: flex;">
+        <button class="small" id="copy-to-clipboard">
+            <p class="button-p">
+                Copy To Clipboard
+            </p>
+            <i data-lucide="clipboard-copy"></i>
+        </button>
+        <button class="small" id="download" style="margin-right: 0;">
+            <p class="button-p">
+                Download
+            </p>
+            <i data-lucide="download"></i>
+        </button>
+    </div>
+
+    <button class="small" id="open-page">
+        <p class="button-p">
+            View All Links
+        </p>
+        <i data-lucide="scan-search"></i>
+    </button>
+
+    <script src="api.js"></script>
+    <script src="popup.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
+
 </html>

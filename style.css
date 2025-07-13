@@ -1,0 +1,137 @@
+:root {
+    --bg-light: #ffffff;
+    --bg-dark: #1e1e1e;
+    --text-light: #111;
+    --text-dark: #f0f0f0;
+    --border-light: #ccc;
+    --border-dark: #444;
+    --accent: #4c9aff;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+    }
+
+    input,
+    select,
+    button {
+        background-color: #2b2b2b;
+        color: var(--text-dark);
+        border: 1px solid var(--border-dark);
+    }
+
+    hr {
+        border-color: var(--border-dark);
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-light);
+    }
+
+    input,
+    select,
+    button {
+        background-color: #fff;
+        color: var(--text-light);
+        border: 1px solid var(--border-light);
+    }
+
+    hr {
+        border-color: var(--border-light);
+    }
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    padding: 16px;
+    margin: 0;
+}
+
+h1,
+h3 {
+    margin-top: 0;
+}
+
+select,
+input,
+button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 0;
+    box-sizing: border-box;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+.category {
+    font-weight: bold;
+    margin-top: 16px;
+}
+
+ul {
+    list-style: none;
+    padding-left: 12px;
+    margin-top: 4px;
+}
+
+li {
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+button.small {
+    margin-right: 8px;
+    margin-top: 10px;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-p {
+    font-size: 13px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    margin: 20px 0;
+}
+
+#path-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+}
+
+.path-valid {
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+    height: 1rem;
+}
+
+.path-invalid {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    height: 1rem;
+}

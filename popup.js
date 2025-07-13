@@ -1,86 +1,60 @@
-const select = document.getElementById("category-select");
-const newCatInput = document.getElementById("new-category");
 const saveBtn = document.getElementById("save-btn");
-const linkGroups = document.getElementById("link-groups");
-const copyBtn = document.getElementById("copy-all");
-const clearBtn = document.getElementById("clear-all");
+const copyBtn = document.getElementById("copy-to-clipboard");
+const pathInput = document.getElementById("category-path");
+const pathPreview = document.getElementById("path-preview");
 
-function loadCategoriesAndLinks() {
-  select.innerHTML = `<option value="Uncategorized">Uncategorized</option>`;
-  linkGroups.innerHTML = "";
+const CATEGORY_REGEX = /^[a-zA-Z0-9\/]+$/;
 
-  chrome.storage.local.get({ savedLinksByCategory: {} }, (data) => {
-    const categories = Object.keys(data.savedLinksByCategory);
+document.getElementById("open-page").addEventListener("click", () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL("links.html") });
+});
 
-    categories.forEach(cat => {
-      // Add to dropdown
-      if (cat !== "Uncategorized") {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat;
-        select.appendChild(opt);
-      }
-
-      // Create category section
-      const title = document.createElement("div");
-      title.className = "category";
-      title.textContent = cat;
-
-      const list = document.createElement("ul");
-      data.savedLinksByCategory[cat].forEach(url => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.href = url;
-        a.textContent = url;
-        a.target = "_blank";
-        li.appendChild(a);
-        list.appendChild(li);
-      });
-
-      linkGroups.appendChild(title);
-      linkGroups.appendChild(list);
-    });
-  });
-}
-
-// Save current tab URL
 saveBtn.addEventListener("click", () => {
-  const selectedCat = newCatInput.value.trim() || select.value || "Uncategorized";
-
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const url = tabs[0].url;
-    chrome.storage.local.get({ savedLinksByCategory: {} }, (data) => {
-      const links = data.savedLinksByCategory[selectedCat] || [];
-      if (!links.includes(url)) {
-        links.push(url);
-        data.savedLinksByCategory[selectedCat] = links;
-        chrome.storage.local.set({ savedLinksByCategory: data.savedLinksByCategory }, loadCategoriesAndLinks);
-      } else {
-        alert("This URL is already saved in this category.");
-      }
-    });
-  });
-});
-
-// Copy all links (with categories)
-copyBtn.addEventListener("click", () => {
-  chrome.storage.local.get({ savedLinksByCategory: {} }, (data) => {
-    let text = '';
-    for (const [cat, links] of Object.entries(data.savedLinksByCategory)) {
-      text += `# ${cat}\n${links.join("\n")}\n\n`;
+    const rawPath = pathInput.value.trim();
+    if (!rawPath || !CATEGORY_REGEX.test(rawPath)) {
+        alert("Invalid category path. Use letters, numbers, and '/' only.");
+        return;
     }
-    navigator.clipboard.writeText(text).then(() => {
-      alert("Copied all links to clipboard!");
+
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        const url = tabs[0].url;
+        chrome.storage.local.get({ linkTree: { name: "root", children: [], links: [] } }, data => {
+            const tree = data.linkTree;
+            const node = getNested(tree, rawPath, true);
+            if (!node.links.includes(url)) {
+                node.links.push(url);
+                chrome.storage.local.set({ linkTree: tree }, () => {
+                    loadCategoriesAndLinks("link-groups");
+                });
+            } else {
+                alert("This URL is already saved in this category.");
+            }
+        });
     });
-  });
 });
 
-// Clear all
-clearBtn.addEventListener("click", () => {
-  if (confirm("Clear ALL saved links?")) {
-    chrome.storage.local.set({ savedLinksByCategory: {} }, loadCategoriesAndLinks);
-  }
+copyBtn.addEventListener("click", () => {
+    chrome.storage.local.get({ linkTree: { name: "root", children: [], links: [] } }, data => {
+        let text = "";
+
+        function traverse(node, path) {
+            if (node.links.length) {
+                text += `# ${path}\n${node.links.join("\n")}\n\n`;
+            }
+            node.children.forEach(child => traverse(child, `${path}/${child.name}`));
+        }
+
+        traverse(data.linkTree, "");
+        navigator.clipboard.writeText(text);
+    });
 });
 
-// Initial load
-loadCategoriesAndLinks();
+pathInput.addEventListener("input", () => {
+    const raw = pathInput.value.trim();
+    const isValid = CATEGORY_REGEX.test(raw);
+
+    pathPreview.className = isValid ? "path-valid" : "path-invalid";
+    pathPreview.innerHTML = raw.replace(/\//g, '<span style="color: orange;">/</span>');
+});
+
+loadCategoriesAndLinks("link-groups");
